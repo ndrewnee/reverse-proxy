@@ -14,8 +14,8 @@ import (
 
 // NewReverseProxy returns new reverse proxy handler that replaces text in response
 func NewReverseProxy(host, search, replace string) (http.Handler, error) {
-	if !strings.Contains(host, "https") {
-		host = "https://" + host
+	if !strings.Contains(host, "http") {
+		host = "http://" + host
 	}
 
 	hostUrl, err := url.Parse(host)
@@ -24,7 +24,8 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 	}
 
 	reverseProxy := httputil.NewSingleHostReverseProxy(hostUrl)
-	reverseProxy.Transport = &http.Transport{DialTLS: dialTLS}
+	// TODO Uncomment when HTTPS will be fixed
+	//reverseProxy.Transport = &http.Transport{DialTLS: dialTLS}
 
 	director := reverseProxy.Director
 	reverseProxy.Director = func(req *http.Request) {
