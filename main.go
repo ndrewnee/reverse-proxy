@@ -18,7 +18,7 @@ func main() {
 	search := os.Args[2]
 	replace := os.Args[3]
 
-	reverseProxy, err := proxy.NewDummyProxy(host, search, replace)
+	reverseProxy, err := proxy.NewReverseProxy(host, search, replace)
 	if err != nil {
 		log.Fatal("Parse host error:", err)
 	}
