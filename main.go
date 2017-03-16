@@ -16,12 +16,15 @@ func main() {
 	search := os.Args[2]
 	replace := os.Args[3]
 
-	reverseProxy := proxy.NewReverseProxy(host, search, replace)
+	reverseProxy, err := proxy.NewReverseProxy(host, search, replace)
+	if err != nil {
+		log.Fatalf("Parse url '%s' error: %s", host, err)
+	}
 
 	port := ":3000"
 	log.Println("Started server on", port)
 
-	err := http.ListenAndServe(port, reverseProxy)
+	err = http.ListenAndServe(port, reverseProxy)
 	if err != nil {
 		log.Fatal("Listen server error: ", err)
 	}

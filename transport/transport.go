@@ -36,6 +36,7 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 		return nil, err
 	}
 
+	// TODO Cannot replace because information is encrypted
 	b = bytes.Replace(b, []byte(t.search), []byte(t.replace), -1)
 	body := ioutil.NopCloser(bytes.NewReader(b))
 
@@ -43,6 +44,8 @@ func (t *Transport) RoundTrip(req *http.Request) (resp *http.Response, err error
 	resp.ContentLength = int64(len(b))
 	resp.Header.Set("Content-Length", strconv.Itoa(len(b)))
 
+	// TODO Should solve problem with redirecting
+	resp.Header.Del("Location")
 	return resp, nil
 }
 

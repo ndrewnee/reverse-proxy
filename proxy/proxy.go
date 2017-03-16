@@ -3,16 +3,15 @@ package proxy
 import (
 	"fmt"
 	"github.com/ndrewnee/reverse-proxy/transport"
-	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 )
 
-func NewReverseProxy(host, search, replace string) http.Handler {
-	proxyUrl, err := url.Parse(fmt.Sprintf("https://%s", host))
+func NewReverseProxy(host, search, replace string) (http.Handler, error) {
+	proxyUrl, err := url.Parse(fmt.Sprintf("https://www.%s", host))
 	if err != nil {
-		log.Fatalf("Parse url '%s' error: %s", host, err)
+		return nil, err
 	}
 
 	proxy := httputil.NewSingleHostReverseProxy(proxyUrl)
@@ -24,5 +23,5 @@ func NewReverseProxy(host, search, replace string) http.Handler {
 		req.Host = req.URL.Host
 	}
 
-	return proxy
+	return proxy, nil
 }
