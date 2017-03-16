@@ -1,3 +1,6 @@
+// This utility start reverse proxy server that can search
+// string in response body of host and replace it to the given string
+// Usage: reverse-proxy <host> <search> <replace>
 package main
 
 import (

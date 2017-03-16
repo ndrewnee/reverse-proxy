@@ -1,8 +1,11 @@
+// Package contains simple version of Reverse Proxy Server.
+// It search string in response body and replace it to the given string
 package proxy
 
 import (
 	"bytes"
 	"crypto/tls"
+	"errors"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -12,10 +15,14 @@ import (
 	"strings"
 )
 
+var (
+	ErrHostNotHttpOrHttps = errors.New(`host must start with "http" or "https"`)
+)
+
 // NewReverseProxy returns new reverse proxy handler that replaces text in response
 func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 	if !strings.Contains(host, "http") {
-		host = "http://" + host
+		return nil, ErrHostNotHttpOrHttps
 	}
 
 	hostUrl, err := url.Parse(host)
@@ -25,7 +32,7 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 
 	reverseProxy := httputil.NewSingleHostReverseProxy(hostUrl)
 	// TODO Uncomment when HTTPS will be fixed
-	//reverseProxy.Transport = &http.Transport{DialTLS: dialTLS}
+	reverseProxy.Transport = &http.Transport{DialTLS: dialTLS}
 
 	director := reverseProxy.Director
 	reverseProxy.Director = func(req *http.Request) {

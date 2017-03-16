@@ -15,19 +15,27 @@ func TestNewReverseProxy(t *testing.T) {
 	tests := []struct {
 		host   string
 		search string
+		err    error
 	}{
-
 		{
 			"google.com",
 			"Google",
+			ErrHostNotHttpOrHttps,
 		},
 		{
-			"stackoverflow.com",
+			"http://mytube.uz",
+			"MyTube",
+			nil,
+		},
+		{
+			"https://stackoverflow.com",
 			"Stack",
+			nil,
 		},
 		{
-			"medium.com",
+			"https://medium.com",
 			"Medium",
+			nil,
 		},
 	}
 
@@ -36,10 +44,14 @@ func TestNewReverseProxy(t *testing.T) {
 		req := httptest.NewRequest("GET", "http://localhost:3000", nil)
 
 		reverseProxy, err := NewReverseProxy(tt.host, tt.search, replaceString)
-		if err != nil {
+		if err != tt.err {
 			t.Log("Host:", tt.host)
 			t.Log("Search:", tt.search)
-			t.Error(err)
+			t.Errorf("Excpected %s, got %s\n", tt.err, err)
+			continue
+		}
+
+		if reverseProxy == nil {
 			continue
 		}
 
