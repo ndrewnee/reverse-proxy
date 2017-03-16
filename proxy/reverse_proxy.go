@@ -1,7 +1,6 @@
 package proxy
 
 import (
-	"bufio"
 	"bytes"
 	"io/ioutil"
 	"net/http"
@@ -40,19 +39,12 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 	}
 
 	reverseProxy.ModifyResponse = func(resp *http.Response) (err error) {
-		defer resp.Body.Close()
-
-		scanner := bufio.NewScanner(resp.Body)
-		scanner.Split(bufio.ScanRunes)
-		var buf bytes.Buffer
-		for scanner.Scan() {
-			_, err = buf.WriteString(scanner.Text())
-			if err != nil {
-				return
-			}
+		b, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return
 		}
 
-		b := bytes.Replace(buf.Bytes(), []byte(search), []byte(replace), -1)
+		b = bytes.Replace(b, []byte(search), []byte(replace), -1)
 		body := ioutil.NopCloser(bytes.NewReader(b))
 
 		resp.Body = body
