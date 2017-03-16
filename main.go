@@ -18,7 +18,7 @@ func main() {
 
 	reverseProxy, err := proxy.NewReverseProxy(host, search, replace)
 	if err != nil {
-		log.Fatalf("Parse url '%s' error: %s", host, err)
+		log.Fatal("Parse host error:", err)
 	}
 
 	port := ":3000"
