@@ -37,6 +37,21 @@ func TestNewReverseProxy(t *testing.T) {
 			"Medium",
 			nil,
 		},
+		{
+			"https://www.google.com",
+			"Google",
+			nil,
+		},
+		{
+			"https://www.facebook.com",
+			"Facebook",
+			nil,
+		},
+		{
+			"https://www.medesk.ru",
+			"Medesk",
+			nil,
+		},
 	}
 
 	for _, tc := range testCases {
