@@ -31,13 +31,15 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 	}
 
 	reverseProxy := httputil.NewSingleHostReverseProxy(hostUrl)
-	// TODO Uncomment when HTTPS will be fixed
-	reverseProxy.Transport = &http.Transport{DialTLS: dialTLS}
+	reverseProxy.Transport = &http.Transport{DialTLS: dialTLS, DisableCompression: true}
 
 	director := reverseProxy.Director
 	reverseProxy.Director = func(req *http.Request) {
 		director(req)
+		// Setting host because default director cannot do that
 		req.Host = req.URL.Host
+		// Don't send client's headers to real site
+		req.Header = http.Header{}
 	}
 
 	reverseProxy.ModifyResponse = func(resp *http.Response) (err error) {

@@ -12,7 +12,7 @@ const (
 )
 
 func TestNewReverseProxy(t *testing.T) {
-	tests := []struct {
+	testCases := []struct {
 		host   string
 		search string
 		err    error
@@ -39,15 +39,15 @@ func TestNewReverseProxy(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
+	for _, tc := range testCases {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "http://localhost:3000", nil)
 
-		reverseProxy, err := NewReverseProxy(tt.host, tt.search, replaceString)
-		if err != tt.err {
-			t.Log("Host:", tt.host)
-			t.Log("Search:", tt.search)
-			t.Errorf("Excpected %s, got %s\n", tt.err, err)
+		reverseProxy, err := NewReverseProxy(tc.host, tc.search, replaceString)
+		if err != tc.err {
+			t.Log("Host:", tc.host)
+			t.Log("Search:", tc.search)
+			t.Errorf("Excpected %s, got %s\n", tc.err, err)
 			continue
 		}
 
@@ -60,16 +60,16 @@ func TestNewReverseProxy(t *testing.T) {
 		resp := w.Result()
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
-			t.Log("Host:", tt.host)
-			t.Log("Search:", tt.search)
+			t.Log("Host:", tc.host)
+			t.Log("Search:", tc.search)
 			t.Error(err)
 			continue
 		}
 
 		if !strings.Contains(string(body), replaceString) {
 			t.Errorf("Text '%s' not found in body\n", replaceString)
-			t.Log("Host:", tt.host)
-			t.Log("Search:", tt.search)
+			t.Log("Host:", tc.host)
+			t.Log("Search:", tc.search)
 			t.Logf("Body: %s\n", body)
 		}
 	}
