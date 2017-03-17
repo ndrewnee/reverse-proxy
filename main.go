@@ -14,7 +14,7 @@ import (
 
 func main() {
 	if len(os.Args) < 4 {
-		fmt.Println("Usage: reverse-proxy <host> <search> <replace>.\n<host> must contain 'http' or 'https'")
+		fmt.Printf("Usage: %s <host> <search> <replace>.\n<host> must contain 'http' or 'https'\n", os.Args[0])
 		return
 	}
 

@@ -38,8 +38,8 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 		director(req)
 		// Setting host because default director cannot do that
 		req.Host = req.URL.Host
-		// Don't send client's headers to real site
-		req.Header = http.Header{}
+		// To prevent encoding response body
+		req.Header.Del("Accept-Encoding")
 	}
 
 	reverseProxy.ModifyResponse = func(resp *http.Response) (err error) {
@@ -59,6 +59,9 @@ func NewReverseProxy(host, search, replace string) (http.Handler, error) {
 		resp.Body = body
 		resp.ContentLength = int64(len(b))
 		resp.Header.Set("Content-Length", strconv.Itoa(len(b)))
+
+		// TODO Should do something with redirect.
+		// When host returns "Location" header with real address proxy redirects to it.
 
 		return
 	}
